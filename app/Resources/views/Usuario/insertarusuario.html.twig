@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+#snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+}
+
+#snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;} 
+    to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+</style>
+    <h3>Registro de Usuarios</h3>
+
+    <form id="my-form">
+         <div class="form-group">
+		    <label>Nombres:</label>
+		    <input type="text" class="form-control" id="nombres">
+		 </div>
+		 <div class="form-group">
+		    <label>Apellidos:</label>
+		    <input type="text" class="form-control" id="apellidos">
+		 </div>
+		 <div class="form-group">
+		    <label>Nombre de Usuario:</label>
+		    <input type="text" class="form-control" id="username">
+		 </div>
+		 <div class="form-group">
+		    <label>Contraseña:</label>
+		    <input type="password" class="form-control" id="password">
+		 </div>
+		 <div class="form-group">
+		    <label>Tipo de Usuario:</label>
+		    <select class="form-control" id="tipoUsuario">
+		        <option value="1">Administrador</option>
+		        <option value="2">Normal</option>
+	        </select>
+		 </div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <button class="btn btn-primary">Editar</button>
+        <button class="btn btn-danger">Eliminar</button>
+        <button class="btn btn-info" onclick="limpiarText()">Nuevo</button>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        (function($){
+            function processForm( e ){
+            $.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:8000/usuario/insertar",
+                // The key needs to match your method's input parameter (case-sensitive).
+                data: JSON.stringify({ 
+                	"nombres": $("#nombres").val()
+                	,"apellidos" : $("#apellidos").val()
+                	,"username" : $("#username").val()
+                    , "password" : $("#password").val()
+                    , "tipoUsuario" : $("#tipoUsuario").val()
+                    , "rolId" : 1
+                    , "estado" : "Activo"
+                    , "fechaRegistro" : "2017-12-09" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data){
+                    myFunction();
+                    limpiarText();
+                },
+                failure: function(errMsg) {
+                    alert(errMsg);
+                }
+            }); 
+            e.preventDefault();
+        }
+
+        $('#my-form').submit( processForm );
+        })(jQuery);
+
+        function myFunction() {
+            var x = document.getElementById("snackbar")
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        }
+
+        function limpiarText(){
+            $("#nombres").val("");
+            $("#apellidos").val("");
+            $("#username").val("");
+            $("#password").val("");
+            $("#tipoUsuario").val("1");
+        }
+    </script>
+
+<div id="snackbar">Usuario guardado correctamente.</div>
+
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}

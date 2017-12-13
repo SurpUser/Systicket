@@ -1,5 +1,44 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-   Lista de Usuarios
+    <div class="table-responsive">
+	  <table class="table table-striped" id="tbl">
+	    <thead>
+	      <tr>
+	      	<th>Id</th>
+	        <th>Nombres</th>
+	        <th>Apellidos</th>
+	        <th>Usuario</th>
+	        <th>Estado</th>
+	        <th>Fecha</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+
+	    </tbody>
+	  </table>
+	</div>
+	<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		var tableData;
+ 
+		$.getJSON('http://127.0.0.1:8000/app_dev.php/usuario/lista', function(data) {
+			//alert('Datos: '+data[1].nombres);	data.length		 
+			for (i = 0; i < data.length	; i++){
+				$("#tbl").append(
+				'<tr>' +
+				'<td>' + data[i].idUsuario + '</td>' +
+				'<td>' + data[i].nombres + '</td>' + 
+				'<td>' + data[i].apellidos + '</td>' +
+				'<td>' + data[i].username + '</td>' +
+				'<td>' + data[i].estado + '</td>' +
+				'<td>' + data[i].fechaRegistro.date + '</td>' +
+				'</tr>'
+				);
+			}
+		});
+	</script>
 {% endblock %}
