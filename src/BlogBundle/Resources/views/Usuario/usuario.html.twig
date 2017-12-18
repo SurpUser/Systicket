@@ -1,9 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<center>
-	<h3>Lista de Usuarios</h3><br>
-</center>
     <div class="table-responsive">
 	  <table class="table table-striped" id="tbl">
 	    <thead>
@@ -14,7 +11,7 @@
 	        <th>Usuario</th>
 	        <th>Estado</th>
 	        <th>Fecha</th>
-			<th>Opciones</th>
+			<th>Opcion</th>
 	      </tr>
 	    </thead>
 	    <tbody>
@@ -24,22 +21,8 @@
 	</div>
 	<script src="{{ asset('assets/js/jquery-3.2.1.min.js') }}"></script>
 	<script type="text/javascript">
-
-		 function  deleteUser(idUsuario) {
-             $.ajax({
-                 type: "DELETE",
-                 data: null,
-                 url: "http://127.0.0.1:8000/app_dev.php/usuario/delete/"+idUsuario,
-                 error: function() {
-                    alert('Error');
-                 },
-                 success: function (data) {
-                    location.href = "http://localhost:8000/usuario/vista";
-                     console.log(data);
-                 }
-             });
-         }
-
+		var tableData;
+ 
 		$.getJSON('http://127.0.0.1:8000/app_dev.php/usuario/lista', function(data) {
 			//alert('Datos: '+data[1].nombres);	data.length		 
 			for (i = 0; i < data.length	; i++){
@@ -51,15 +34,10 @@
 				'<td>' + data[i].username + '</td>' +
 				'<td>' + data[i].estado + '</td>' +
 				'<td>' + data[i].fechaRegistro.date + '</td>' +
-                '<td>' + "<a href='http://127.0.0.1:8000/app_dev.php/usuario/"+ data[i].idUsuario +"/editar' class='btn btn-primary'>Editar</a>  " + 
-                "<button id='deleteUser' onClick='eliminar("+data[i].idUsuario+")' class='btn btn-danger'>Eliminar</button>" + '</td>' +
+                '<td>' + "<a href='http://127.0.0.1:8000/app_dev.php/usuario/"+ data[i].idUsuario +"/editar' class='btn btn-primary'>Editar</a>" + '</td>' +
 				'</tr>'
 				);
 			}
 		});
-
-		function eliminar(idUsuario){
-			deleteUser(idUsuario);
-		}
 	</script>
 {% endblock %}

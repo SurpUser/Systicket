@@ -16,7 +16,7 @@ class UsuarioType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('idUsuario')
+       // ->add('idUsuario')
         ->add('nombres', TextType::class, array('invalid_message' => "Nombre incorrecto"))
         ->add('apellidos')
         ->add('username')
@@ -24,8 +24,9 @@ class UsuarioType extends AbstractType
         ->add('tipoUsuario')
         ->add('rolId')
         ->add('estado')
-        ->add('fechaRegistro', DateTimeType::class,
-            array('widget' => 'single_text', 'format' => 'yyyy-MM-dd'));
+        //->add('fechaRegistro', DateTimeType::class,
+        //    array('widget' => 'single_text', 'format' => 'yyyy-MM-dd'))
+        ;
     }
 
     /**

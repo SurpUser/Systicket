@@ -38,22 +38,28 @@ class UsuarioController extends Controller
     }
 
     /**
+     * @Route("usuario/{idUsuario}/editar", name="usuario_buscareditar", requirements={"idUsuario"="\d+"})
+     * @Method("GET")
+     * @param Request $request
+     * @param Usuario $usuario
+     * @return JsonResponse
+     */
+    public function editarAction(Request $request, Usuario $usuario)
+    {
+        return $this->render('BlogBundle:Usuario:edit_user.html.twig', array('usuario' =>$usuario));
+    }
+
+    /**
      * @Route("usuario/delete/{idUsuario}", name="delete_usuarios", requirements={"idUsuario"="\d+"})
-     * @Method("DELETE")
      * */
     public function deleteAction($idUsuario) {
         $posts = $this->getDoctrine()->getRepository("BlogBundle:Usuario")->find($idUsuario);
  
         $em = $this->getDoctrine()->getManager();
         $em->remove($posts);
-        $flush= $em->flush();
- 
-        if ($flush == null) {
-            $msn = "Post se ha borrado correctamente";
-        } else {
-            $msn = "El post no se ha borrado";
-        }
-        return $msn;
+        $em->flush();
+
+        return $this->render('BlogBundle:Usuario:usuario.html.twig');
     }
 
     /**
@@ -66,30 +72,38 @@ class UsuarioController extends Controller
        ->createQueryBuilder('c')
        ->select('c')
        ->getQuery()
-       ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY)
-    ;
-    return new JsonResponse($categorias);
+       ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+        return new JsonResponse($categorias);
     }
 
     /**
-     * @Route("usuario/update/{idUsuario}", requirements={"idUsuario"="\d+"})
-     * @Method("PUT")
-     */
-    public function updateAction($idUsuario)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $post = $em->getRepository('BlogBundle:Usuario')->find($idUsuario);
-     
-        if (!$post) {
-            throw $this->createNotFoundException(
-                'No post found for id '.$idUsuario
-            );
+    * @Route("usuario/update/{idUsuario}", name="update_usuario", options={"expose"=true})
+    * @param Request $request
+    * @param Usuario $usuario
+    * @Method({"PUT"})
+    * @return JsonResponse
+    * */
+    public function updateUsuario(Request $request, Usuario $usuario){
+
+        $data = json_decode($request->getContent(), true);
+
+        $form = $this->createForm(UsuarioType::class, $usuario);
+        $usuario->setFechaRegistro(New \DateTime());
+        $form->submit($data);
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+        }else{
+            foreach ($form->getErrors() as $value) {
+                $errors[] = $error->getMessage();
+            }
         }
-     
-        $post->setTitle('Nuevo post actualizado!');
-        $em->flush();
-     
-        return new Response('Updated post with id '.$post->getId());
+
+        $newUser = json_decode($this->get('serializer')->serialize($usuario,'json'), true);
+
+        return new JsonResponse($newUser);
     }
 
     /**

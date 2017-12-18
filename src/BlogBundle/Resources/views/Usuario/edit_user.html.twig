@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Editar Usuario</h1>
+    <form>
+        {# Input oculto para mantener el ID del Usuario #}
+        <input type="hidden" value="{{ usuario.idUsuario }}" id="id">
+        <div class="form-group">
+            <label for="nombres">Nombre</label>
+            <input type="text"  class="form-control" id="nombres" placeholder="Nombres" value="{{ usuario.nombres }}">
+        </div>
+        <div class="form-group">
+            <label>Apellidos:</label>
+            <input type="text" class="form-control" id="apellidos" value="{{ usuario.apellidos }}">
+         </div>
+         <div class="form-group">
+            <label>Nombre de Usuario:</label>
+            <input type="text" class="form-control" id="username" value="{{ usuario.username }}">
+         </div>
+         <div class="form-group">
+            <label>Contraseña:</label>
+            <input type="password" class="form-control" id="password" value="{{ usuario.password }}">
+         </div>
+         <div class="form-group">
+            <label>Estado:</label>
+            <input type="text" class="form-control" id="estado" value="{{ usuario.estado }}">
+         </div>
+         <div class="form-group">
+            <label>Fecha Registro:</label>
+            <input type="text" class="form-control" id="fechaRegistro" value="{{ usuario.fechaRegistro.date }}">
+         </div>
+        <button type="button" id="addUser" class="btn btn-default">Actualizar</button>
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+     <script>
+         function  addUser(user) {
+             $.ajax({
+                 type: "PUT",
+                 data: JSON.stringify(user),
+                 url: "http://127.0.0.1:8000/app_dev.php/usuario/update/"+ user.id,
+                 error: function() {
+                    alert('Error');
+                 },
+                 success: function (data) {
+                    location.href = "http://localhost:8000/usuario/vista";
+                     console.log(data);
+                 }
+             });
+         }
+
+         $(document).ready(function () {
+
+             $('#addUser').click(function () {
+                var id = $('#id').val();
+                 var nombres = $('#nombres').val();
+                 var apellidos = $('#apellidos').val();
+                 var username = $('#username').val();
+                 var password = $('#password').val();
+                 var estado = $('#estado').val();
+                 var fechaRegistro = $('#fechaRegistro').val(); 
+
+               //  alert(name+", "+email);
+                 addUser({ 
+                    id: id,
+                    nombres : nombres,
+                    apellidos : apellidos, 
+                    username : username, 
+                    password : password,
+                    tipoUsuario : 1,
+                    rolId : 1,
+                    estado : estado,
+                    fechaRegistro : fechaRegistro
+                });
+             });
+         });
+         </script>
+{% endblock %}
